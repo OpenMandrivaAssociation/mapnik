@@ -16,6 +16,8 @@ Source1:   mapnik-data.license
 Source2:   no_date_footer.html
 Source3:   viewer.desktop
 Patch0:    use-system-fonts.patch
+# (blino) use pkgconfig to build with freetype2
+Patch1:	   mapnik-freetype2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Requires:  dejavu-fonts
 
@@ -101,6 +103,7 @@ spatial visualization library
 %prep
 %setup -q -n %{name}
 %patch0 -p0
+%patch1 -p1 -b .freetype2
 
 # clean SVN
 find . -type d -name .svn -exec rm -rf '{}' +

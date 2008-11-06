@@ -29,6 +29,7 @@ BuildRequires: libxml2-devel boost-devel libicu-devel
 BuildRequires: libtiff-devel libjpeg-devel libpng-devel
 BuildRequires: cairomm-devel pycairo-devel
 BuildRequires: freetype2-devel
+BuildRequires: python-devel
 
 %description
 Mapnik is a Free Toolkit for developing mapping applications.

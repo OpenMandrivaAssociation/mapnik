@@ -1,7 +1,7 @@
 %define name mapnik
 %define version 0.5.2
 %define svn 750
-%define rel 1
+%define rel 2
 %define release %mkrel 0.%{svn}.%{rel}
 
 Name:      %{name}
@@ -19,7 +19,7 @@ Patch0:    use-system-fonts.patch
 # (blino) use pkgconfig to build with freetype2
 Patch1:	   mapnik-freetype2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Requires:  dejavu-fonts
+Requires:  fonts-ttf-dejavu
 
 BuildRequires: postgresql-devel pkgconfig
 BuildRequires: gdal-devel proj-devel agg-devel

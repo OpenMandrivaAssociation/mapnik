@@ -8,7 +8,7 @@ Name:      %{name}
 Version:   %{version}
 Release:   %{release}
 Summary:   Free Toolkit for developing mapping applications
-Group:     Applications/Engineering
+Group:     Communications
 License:   LGPLv2+
 URL:       http://mapnik.org/
 Source0:   http://download.berlios.de/mapnik/mapnik_src-%{version}.svn%{svn}.tar.gz
@@ -48,7 +48,7 @@ industry standard libraries from boost.org
 
 %package devel
 Summary: Mapnik is a Free toolkit for developing mapping applications
-Group: Development/Tools
+Group: Development/C++
 Requires: %{name} = %{version}-%{release}
 Requires: libpng-devel libjpeg-devel freetype-devel agg-devel
 
@@ -71,7 +71,7 @@ industry standard libraries from boost.org
 %package python
 Summary:  Python bindings for the Mapnik spatial visualization library
 License:  GPLv2+
-Group:    Development/Libraries
+Group:    Development/Python
 Requires: %{name} = %{version}-%{release}
 Requires: python-imaging python-lxml
 
@@ -81,7 +81,7 @@ Language bindings to enable the Mapnik library to be used from python
 %package utils
 License:  GPLv2+
 Summary:  Utilities distributed with the Mapnik spatial visualization library
-Group:    Development/Libraries
+Group:    Communications
 Requires: %{name} = %{version}-%{release}
 
 %description utils
@@ -91,7 +91,7 @@ library
 %package demo
 Summary:  Demo utility and some sample data distributed with mapnik
 License:  GPLv2+ GeoGratis
-Group:    Development/Libraries
+Group:    Development/Other
 Requires: %{name}-devel = %{version}-%{release}
 Requires: %{name}-python = %{version}-%{release}
 Requires: freetype2-devel

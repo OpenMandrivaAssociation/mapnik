@@ -1,7 +1,7 @@
 %define name mapnik
 %define version 0.5.2
 %define svn 750
-%define rel 2
+%define rel 3
 %define release %mkrel 0.%{svn}.%{rel}
 
 Name:      %{name}
@@ -51,7 +51,6 @@ industry standard libraries from boost.org
 Summary: Mapnik is a Free toolkit for developing mapping applications
 Group: Development/C++
 Requires: %{name} = %{version}-%{release}
-Requires: libpng-devel libjpeg-devel freetype-devel agg-devel
 
 %description devel
 Mapnik is a Free Toolkit for developing mapping applications.

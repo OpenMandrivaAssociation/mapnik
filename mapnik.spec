@@ -1,7 +1,7 @@
 %define name mapnik
 %define version 0.5.2
 %define svn 750
-%define rel 5
+%define rel 6
 %define release %mkrel 0.%{svn}.%{rel}
 
 Name:      %{name}

@@ -1,8 +1,11 @@
 %define name mapnik
-%define version 0.5.2
+%define version 0.6.1
 %define svn 750
-%define rel 7
-%define release %mkrel 0.%{svn}.%{rel}
+%define rel 1
+%define release %mkrel %{rel}
+%define major 6
+%define libname %mklibname %{name} %{major}
+%define develname %mklibname -d %{name}
 
 Name:      %{name}
 Version:   %{version}
@@ -11,16 +14,14 @@ Summary:   Free Toolkit for developing mapping applications
 Group:     Communications
 License:   LGPLv2+
 URL:       http://mapnik.org/
-Source0:   http://download.berlios.de/mapnik/mapnik_src-%{version}.svn%{svn}.tar.gz
+Source0:   http://download.berlios.de/mapnik/%{name}-%{version}.tar.bz2
 Source1:   mapnik-data.license
 Source2:   no_date_footer.html
 Source3:   viewer.desktop
-Patch0:    use-system-fonts.patch
+#Patch0:    use-system-fonts.patch
 # (blino) use pkgconfig to build with freetype2
-Patch1:	   mapnik-freetype2.patch
+#Patch1:	   mapnik-freetype2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Requires:  fonts-ttf-dejavu
-
 BuildRequires: postgresql-devel pkgconfig
 BuildRequires: gdal-devel proj-devel agg-devel
 BuildRequires: scons doxygen desktop-file-utils
@@ -30,6 +31,8 @@ BuildRequires: libtiff-devel libjpeg-devel libpng-devel
 BuildRequires: cairomm-devel pycairo-devel
 BuildRequires: freetype2-devel
 BuildRequires: python-devel
+Requires:  fonts-ttf-dejavu
+Requires: %{libname} = %{version}-%{release}
 
 %description
 Mapnik is a Free Toolkit for developing mapping applications.
@@ -47,12 +50,35 @@ management, filesystem access, regular expressions, parsing and so
 on, Mapnik doesn't re-invent the wheel, but utilises best of breed
 industry standard libraries from boost.org 
 
-%package devel
+%package -n %{libname}
+Summary: Mapnik is a Free toolkit for developing mapping applications
+Group: System/Libraries
+
+%description -n %{libname}
+Mapnik is a Free Toolkit for developing mapping applications.
+It's written in C++ and there are Python bindings to
+facilitate fast-paced agile development. It can comfortably
+be used for both desktop and web development, which was something
+I wanted from the beginning.
+
+Mapnik is about making beautiful maps. It uses the AGG library
+and offers world class anti-aliasing rendering with subpixel
+accuracy for geographic data. It is written from scratch in
+modern C++ and doesn't suffer from design decisions made a decade
+ago. When it comes to handling common software tasks such as memory
+management, filesystem access, regular expressions, parsing and so
+on, Mapnik doesn't re-invent the wheel, but utilises best of breed
+industry standard libraries from boost.org
+
+
+%package -n %{develname}
 Summary: Mapnik is a Free toolkit for developing mapping applications
 Group: Development/C++
-Requires: %{name} = %{version}-%{release}
+Requires: %{libname} = %{version}-%{release}
+Provides: %{name}-devel = %{version}-%{release}
+Obsoletes: %{name}-devel
 
-%description devel
+%description -n %{develname}
 Mapnik is a Free Toolkit for developing mapping applications.
 It's written in C++ and there are Python bindings to
 facilitate fast-paced agile development. It can comfortably
@@ -88,22 +114,22 @@ Requires: %{name} = %{version}-%{release}
 Miscellaneous utilities distributed with the Mapnik spatial visualization
 library
 
-%package demo
-Summary:  Demo utility and some sample data distributed with mapnik
-License:  GPLv2+ GeoGratis
-Group:    Development/Other
-Requires: %{name}-devel = %{version}-%{release}
-Requires: %{name}-python = %{version}-%{release}
-Requires: freetype2-devel
+##%package demo
+#Summary:  Demo utility and some sample data distributed with mapnik
+#License:  GPLv2+ GeoGratis
+#Group:    Development/Other
+#Requires: %{develname} = %{version}-%{release}
+#Requires: %{name}-python = %{version}-%{release}
+#Requires: freetype2-devel
 
-%description demo
-Demo application and sample vector datas distributed with the Mapnik
-spatial visualization library
+##%description demo
+#Demo application and sample vector datas distributed with the Mapnik
+#spatial visualization library
 
 %prep
-%setup -q -n %{name}
-%patch0 -p0
-%patch1 -p1 -b .freetype2
+%setup -q -n %{name}-%{version}
+#%patch0 -p0
+#%patch1 -p1 -b .freetype2
 
 # clean SVN
 find . -type d -name .svn -exec rm -rf '{}' +
@@ -160,12 +186,12 @@ scons         PREFIX=%{_prefix} \
               INTERNAL_LIBAGG=False
 
 # build mapnik viewer app
-pushd demo/viewer
-qmake viewer.pro
+#pushd demo/viewer
+#qmake viewer.pro
 # WARNING smp may break build
 # %{?_smp_mflags}
-make
-popd
+#make
+#popd
 
 # build doxygen docs
 # use multilib aware footer
@@ -235,13 +261,16 @@ rm -rf %{buildroot}
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/input
 %{_libdir}/%{name}/input/*.input
-%{_libdir}/lib%{name}.so.*
 
-%files devel
+%files -n %{libname}
+%defattr(-,root,root,-)
+%{_libdir}/lib%{name}.so.%{major}*
+
+%files -n %{develname}
 %defattr(-,root,root,-)
 %doc docs/doxygen/html
 %dir %{_includedir}/%{name}
-%{_includedir}/%{name}/*
+%{_includedir}/%{name}/*.h
 %{_libdir}/lib%{name}.so
 %{_datadir}/pkgconfig/%{name}.pc
 
@@ -256,8 +285,8 @@ rm -rf %{buildroot}
 %{_bindir}/viewer
 %{_datadir}/applications/mandriva-viewer.desktop
 
-%files demo
-%defattr(-,root,root,-)
-%doc demo/c++
-%doc demo/data
-%doc demo/python demo/test
+##%files demo
+##%defattr(-,root,root,-)
+##%doc demo/c++
+##%doc demo/data
+##%doc demo/python demo/test

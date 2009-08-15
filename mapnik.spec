@@ -18,9 +18,6 @@ Source0:   http://download.berlios.de/mapnik/%{name}-%{version}.tar.bz2
 Source1:   mapnik-data.license
 Source2:   no_date_footer.html
 Source3:   viewer.desktop
-#Patch0:    use-system-fonts.patch
-# (blino) use pkgconfig to build with freetype2
-#Patch1:	   mapnik-freetype2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: postgresql-devel pkgconfig
 BuildRequires: gdal-devel proj-devel agg-devel
@@ -114,22 +111,20 @@ Requires: %{name} = %{version}-%{release}
 Miscellaneous utilities distributed with the Mapnik spatial visualization
 library
 
-##%package demo
-#Summary:  Demo utility and some sample data distributed with mapnik
-#License:  GPLv2+ GeoGratis
-#Group:    Development/Other
-#Requires: %{develname} = %{version}-%{release}
-#Requires: %{name}-python = %{version}-%{release}
-#Requires: freetype2-devel
+%package demo
+Summary:  Demo utility and some sample data distributed with mapnik
+License:  GPLv2+ GeoGratis
+Group:    Development/Other
+Requires: %{develname} = %{version}-%{release}
+Requires: %{name}-python = %{version}-%{release}
+Requires: freetype2-devel
 
-##%description demo
-#Demo application and sample vector datas distributed with the Mapnik
-#spatial visualization library
+%description demo
+Demo application and sample vector datas distributed with the Mapnik
+spatial visualization library
 
 %prep
 %setup -q -n %{name}-%{version}
-#%patch0 -p0
-#%patch1 -p1 -b .freetype2
 
 # clean SVN
 find . -type d -name .svn -exec rm -rf '{}' +
@@ -162,8 +157,10 @@ find . -type d -perm /g+s -exec chmod -s '{}' \;
 sed -i -e 's|/lib/mapnik/input/|/%{name}/input/|g' demo/c++/rundemo.cpp
 
 sed -i -e 's|/opt/%{name}/include|../../include|g' demo/viewer/viewer.pro
-sed -i -e 's|/opt/boost/include/boost-1_34_1|%{_includedir}/boost|g' demo/viewer/viewer.pro
+sed -i -e 's|/opt/boost/include/boost-1_39|%{_includedir}/boost|g' demo/viewer/viewer.pro
+sed -i -e 's|/usr/X11/include/freetype2|%{_includedir}/freetype2|g' demo/viewer/viewer.pro
 sed -i -e 's|-L/opt/mapnik/lib|-L../../src/|g' demo/viewer/viewer.pro
+sed -i -e 's|-L/opt/boost/lib|-L/usr/%{_lib}|g' demo/viewer/viewer.pro
 sed -i -e 's|/usr/local|/usr|g' demo/viewer/viewer.pro
 
 %build
@@ -177,6 +174,7 @@ sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\'|g" plugins/input/raster/S
 # fix build flags
 sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s $RPM_OPT_FLAGS |g" SConstruct
 
+
 # WARNING smp may break build
 # %{?_smp_mflags}
 scons         PREFIX=%{_prefix} \
@@ -186,12 +184,12 @@ scons         PREFIX=%{_prefix} \
               INTERNAL_LIBAGG=False
 
 # build mapnik viewer app
-#pushd demo/viewer
-#qmake viewer.pro
+pushd demo/viewer
+qmake viewer.pro
 # WARNING smp may break build
 # %{?_smp_mflags}
-#make
-#popd
+make
+popd
 
 # build doxygen docs
 # use multilib aware footer
@@ -285,8 +283,8 @@ rm -rf %{buildroot}
 %{_bindir}/viewer
 %{_datadir}/applications/mandriva-viewer.desktop
 
-##%files demo
-##%defattr(-,root,root,-)
-##%doc demo/c++
-##%doc demo/data
-##%doc demo/python demo/test
+%files demo
+%defattr(-,root,root,-)
+%doc demo/c++
+%doc demo/data
+%doc demo/python demo/test

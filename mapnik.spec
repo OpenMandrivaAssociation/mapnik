@@ -181,7 +181,8 @@ scons         PREFIX=%{_prefix} \
               THREADING=multi \
               XMLPARSER=libxml2 \
               GDAL_INCLUDES=%{_includedir}/gdal \
-              INTERNAL_LIBAGG=False
+              INTERNAL_LIBAGG=False \
+	      SYSTEM_FONTS=True
 
 # build mapnik viewer app
 pushd demo/viewer
@@ -208,7 +209,8 @@ scons install DESTDIR=%{buildroot} \
               THREADING=multi \
               XMLPARSER=libxml2 \
               GDAL_INCLUDES=%{_includedir}/gdal \
-              INTERNAL_LIBAGG=False
+              INTERNAL_LIBAGG=False \
+	      SYSTEM_FONTS=True
 
 # get rid of fonts use external instead
 rm -rf %{buildroot}%{_libdir}/%{name}/fonts

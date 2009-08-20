@@ -3,7 +3,7 @@
 %define svn 750
 %define rel 1
 %define release %mkrel %{rel}
-%define major 6
+%define major 0
 %define libname %mklibname %{name} %{major}
 %define develname %mklibname -d %{name}
 
@@ -111,17 +111,17 @@ Requires: %{name} = %{version}-%{release}
 Miscellaneous utilities distributed with the Mapnik spatial visualization
 library
 
-%package demo
-Summary:  Demo utility and some sample data distributed with mapnik
-License:  GPLv2+ GeoGratis
-Group:    Development/Other
-Requires: %{develname} = %{version}-%{release}
-Requires: %{name}-python = %{version}-%{release}
-Requires: freetype2-devel
+#%package demo
+#Summary:  Demo utility and some sample data distributed with mapnik
+#License:  GPLv2+ GeoGratis
+#Group:    Development/Other
+#Requires: %{develname} = %{version}-%{release}
+#Requires: %{name}-python = %{version}-%{release}
+#Requires: freetype2-devel
 
-%description demo
-Demo application and sample vector datas distributed with the Mapnik
-spatial visualization library
+#%description demo
+#Demo application and sample vector datas distributed with the Mapnik
+#spatial visualization library
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -185,20 +185,20 @@ scons         PREFIX=%{_prefix} \
 	      SYSTEM_FONTS=True
 
 # build mapnik viewer app
-pushd demo/viewer
-qmake viewer.pro
+#pushd demo/viewer
+#qmake viewer.pro
 # WARNING smp may break build
 # %{?_smp_mflags}
-make
-popd
+#make
+#popd
 
 # build doxygen docs
 # use multilib aware footer
-sed -i -e 's|HTML_FOOTER|HTML_FOOTER=no_date_footer.html\n\#|g' docs/doxygen/Doxyfile
-install -p -m 644 %{SOURCE2} docs/doxygen/
-pushd docs/doxygen
-doxygen
-popd
+#sed -i -e 's|HTML_FOOTER|HTML_FOOTER=no_date_footer.html\n\#|g' docs/doxygen/Doxyfile
+#install -p -m 644 %{SOURCE2} docs/doxygen/
+#pushd docs/doxygen
+#doxygen
+#popd
 
 %install
 
@@ -217,9 +217,9 @@ rm -rf %{buildroot}%{_libdir}/%{name}/fonts
 
 # install more utils
 mkdir -p %{buildroot}%{_bindir}
-install -p -m 755 demo/viewer/viewer %{buildroot}%{_bindir}/
+#install -p -m 755 demo/viewer/viewer %{buildroot}%{_bindir}/
 install -p -m 755 utils/stats/mapdef_stats.py %{buildroot}%{_bindir}/
-install -p -m 644 %{SOURCE1} demo/data/
+#install -p -m 644 %{SOURCE1} demo/data/
 
 # install pkgconfig file
 cat > %{name}.pc <<EOF
@@ -238,8 +238,8 @@ mkdir -p %{buildroot}%{_datadir}/pkgconfig/
 install -p -m 644 %{name}.pc %{buildroot}%{_datadir}/pkgconfig/
 
 # install desktop file
-desktop-file-install --vendor="mandriva" \
-        --dir=%{buildroot}%{_datadir}/applications %{SOURCE3}
+#desktop-file-install --vendor="mandriva" \
+ #       --dir=%{buildroot}%{_datadir}/applications %{SOURCE3}
 
 %check
 
@@ -247,9 +247,8 @@ desktop-file-install --vendor="mandriva" \
 export PYTHONPATH=$PYTHONPATH:%{buildroot}%{python_sitearch}
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH%{buildroot}%{_libdir}
 
-pushd tests/python/
-./test_load_map.py || true
-./test_save_map.py || true
+pushd tests/
+./run_tests.py || true
 popd
 
 %clean
@@ -268,9 +267,9 @@ rm -rf %{buildroot}
 
 %files -n %{develname}
 %defattr(-,root,root,-)
-%doc docs/doxygen/html
+##%doc docs/doxygen/html
 %dir %{_includedir}/%{name}
-%{_includedir}/%{name}/*.h
+%{_includedir}/%{name}/*.hpp
 %{_libdir}/lib%{name}.so
 %{_datadir}/pkgconfig/%{name}.pc
 
@@ -282,11 +281,11 @@ rm -rf %{buildroot}
 %files utils
 %defattr(-,root,root,-)
 %{_bindir}/shapeindex
-%{_bindir}/viewer
-%{_datadir}/applications/mandriva-viewer.desktop
+#%{_bindir}/viewer
+#%{_datadir}/applications/mandriva-viewer.desktop
 
-%files demo
-%defattr(-,root,root,-)
-%doc demo/c++
-%doc demo/data
-%doc demo/python demo/test
+#%files demo
+#%defattr(-,root,root,-)
+#%doc demo/c++
+#%doc demo/data
+#%doc demo/python demo/test

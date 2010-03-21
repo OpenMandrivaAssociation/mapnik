@@ -1,6 +1,6 @@
 %define name mapnik
 %define version 0.7.0
-%define rel 3
+%define rel 4
 %define release %mkrel %{rel}
 %define major 0
 %define libname %mklibname %{name} %{major}

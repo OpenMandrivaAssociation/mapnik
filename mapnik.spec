@@ -1,14 +1,10 @@
-%define name mapnik
-%define version 0.7.0
-%define rel 4
-%define release %mkrel %{rel}
 %define major 0
 %define libname %mklibname %{name} %{major}
 %define develname %mklibname -d %{name}
 
-Name:      %{name}
-Version:   %{version}
-Release:   %{release}
+Name:      mapnik
+Version:   0.7.1
+Release:   %mkrel 1
 Summary:   Free Toolkit for developing mapping applications
 Group:     Communications
 License:   LGPLv2+

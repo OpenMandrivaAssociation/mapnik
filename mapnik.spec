@@ -167,7 +167,7 @@ sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/shape/S
 sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\'|g" plugins/input/raster/SConscript
 
 # fix build flags
-sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s $RPM_OPT_FLAGS |g" SConstruct
+sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s %optflags -DBOOST_FILESYSTEM_VERSION=2 |g" SConstruct
 
 
 # WARNING smp may break build

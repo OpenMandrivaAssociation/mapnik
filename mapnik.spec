@@ -4,7 +4,7 @@
 
 Name:      mapnik
 Version:   0.7.1
-Release:   %mkrel 5
+Release:   %mkrel 6
 Summary:   Free Toolkit for developing mapping applications
 Group:     Communications
 License:   LGPLv2+

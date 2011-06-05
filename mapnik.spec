@@ -20,7 +20,7 @@ BuildRequires: scons doxygen desktop-file-utils
 BuildRequires: libltdl-devel qt4-devel > 4.3
 BuildRequires: libxml2-devel boost-devel libicu-devel
 BuildRequires: libtiff-devel libjpeg-devel libpng-devel
-BuildRequires: cairomm-devel pycairo-devel
+BuildRequires: cairomm-devel python-cairo-devel
 BuildRequires: freetype2-devel
 BuildRequires: python-devel
 Requires:  fonts-ttf-dejavu

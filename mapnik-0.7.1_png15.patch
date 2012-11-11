@@ -1,0 +1,11 @@
+--- mapnik-0.7.1/src/png_reader.cpp~	2010-03-22 16:40:13.000000000 +0000
++++ mapnik-0.7.1/src/png_reader.cpp	2012-06-10 17:05:06.573514444 +0000
+@@ -82,7 +82,7 @@
+     {
+         png_size_t check;
+         check = (png_size_t)fread(data, (png_size_t)1, length,
+-                                  (FILE *)png_ptr->io_ptr);
++                                  (FILE *)png_get_io_ptr(png_ptr));
+ 
+         if (check != length)
+         {

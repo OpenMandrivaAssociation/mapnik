@@ -1,28 +1,28 @@
-%define major	0
+%define major	2
 %define libname %mklibname %{name} %{major}
 %define devname %mklibname -d %{name}
 
 Summary:	Free Toolkit for developing mapping applications
 Name:		mapnik
-Version:	0.7.1
-Release:	7
+Version:	2.1.0
+Release:	1
 Group:		Communications
 License:	LGPLv2+
 URL:		http://mapnik.org/
-Source0:	https://github.com/downloads/mapnik/mapnik/%{name}-%{version}.tar.bz2
+Source0:	https://github.com/downloads/mapnik/mapnik/%{name}-v%{version}.tar.bz2
 Source1:	mapnik-data.license
 Source2:	no_date_footer.html
 Source3:	viewer.desktop
-Patch0:		mapnik-0.7.1_png15.patch
+Source4:	.abf.yml
 
 BuildRequires:	chrpath
 BuildRequires:	desktop-file-utils
 BuildRequires:	doxygen
 BuildRequires:	scons
-BuildRequires:	agg-devel
+BuildRequires:	pkgconfig(libagg)
 BuildRequires:	boost-devel
 BuildRequires:	gdal-devel
-BuildRequires:	icu-devel
+BuildRequires:	pkgconfig(icu-i18n)
 BuildRequires:	jpeg-devel
 BuildRequires:	libtool-devel
 BuildRequires:	postgresql-devel
@@ -93,7 +93,7 @@ Miscellaneous utilities distributed with the Mapnik spatial visualization
 library
 
 %prep
-%setup -q
+%setup -q -n %{name}-v%{version}
 %apply_patches
 
 # clean SVN
@@ -134,15 +134,14 @@ sed -i -e 's|-L/opt/boost/lib|-L/usr/%{_lib}|g' demo/viewer/viewer.pro
 sed -i -e 's|/usr/local|/usr|g' demo/viewer/viewer.pro
 
 %build
-
 # linkage errors
-sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/gdal/SConscript
-sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/postgis/SConscript
-sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/shape/SConscript
-sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\'|g" plugins/input/raster/SConscript
+#sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/gdal/SConscript
+#sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/postgis/SConscript
+#sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\',|g" plugins/input/shape/SConscript
+#sed -i -e "s|libraries \= \[|libraries \= \[\'mapnik\'|g" plugins/input/raster/SConscript
 
 # fix build flags
-sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s %optflags -DBOOST_FILESYSTEM_VERSION=2 |g" SConstruct
+sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s %optflags -DBOOST_FILESYSTEM_VERSION=3 |g" SConstruct
 
 
 # WARNING smp may break build
@@ -152,6 +151,7 @@ scons         PREFIX=%{_prefix} \
               XMLPARSER=libxml2 \
               GDAL_INCLUDES=%{_includedir}/gdal \
               INTERNAL_LIBAGG=False \
+              LIBDIR_SCHEMA=%{_lib} \
 	      SYSTEM_FONTS=True
 
 %install
@@ -161,6 +161,7 @@ scons install DESTDIR=%{buildroot} \
               XMLPARSER=libxml2 \
               GDAL_INCLUDES=%{_includedir}/gdal \
               INTERNAL_LIBAGG=False \
+              LIBDIR_SCHEMA=%{_lib} \
 	      SYSTEM_FONTS=True
 
 # get rid of fonts use external instead
@@ -203,7 +204,7 @@ pushd tests/
 popd
 
 %files
-%doc AUTHORS COPYING README
+%doc AUTHORS.md COPYING README.md
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/input
 %{_libdir}/%{name}/input/*.input
@@ -214,13 +215,110 @@ popd
 %files -n %{devname}
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/*.hpp
+%{_includedir}/%{name}/*/*.hpp
 %{_libdir}/lib%{name}.so
 %{_datadir}/pkgconfig/%{name}.pc
 
 %files python
 %{python_sitearch}/%{name}
 %{_bindir}/mapdef_stats.py
+%{_bindir}/upgrade_map_xml.py
+%{python_sitearch}/%{name}%{major}/__init__.py
 
 %files utils
 %{_bindir}/shapeindex
+%{_bindir}/%{name}-config
+%{_bindir}/%{name}-speed-check
+%{_bindir}/svg2png
+
+
+
+%changelog
+* Sun Jun 10 2012 Matthew Dawkins <mattydaw@mandriva.org> 0.7.1-7
++ Revision: 804364
+- rebuild
+- added p0 for png15 build (upstream)
+- cleaned up spec
+- chrpath fixes
+
+* Sun Jun 05 2011 Funda Wang <fwang@mandriva.org> 0.7.1-6
++ Revision: 682856
+- update br
+- rebuild for new icu
+
+* Mon Mar 14 2011 Funda Wang <fwang@mandriva.org> 0.7.1-5
++ Revision: 644600
+- force version 2 for filesystem
+- rebuild for new icu
+
+* Tue Nov 02 2010 Michael Scherer <misc@mandriva.org> 0.7.1-4mdv2011.0
++ Revision: 592416
+- rebuild for python 2.7
+
+* Mon Aug 23 2010 Funda Wang <fwang@mandriva.org> 0.7.1-3mdv2011.0
++ Revision: 572389
+- rebuild for new boost
+
+* Wed Aug 04 2010 Funda Wang <fwang@mandriva.org> 0.7.1-2mdv2011.0
++ Revision: 566007
+- rebuild for new boost
+
+* Mon Apr 26 2010 Emmanuel Andry <eandry@mandriva.org> 0.7.1-1mdv2010.1
++ Revision: 539350
+- New version 0.7.1
+
+* Sun Mar 21 2010 Funda Wang <fwang@mandriva.org> 0.7.0-4mdv2010.1
++ Revision: 526121
+- rebuild for new icu
+
+* Mon Feb 08 2010 Anssi Hannula <anssi@mandriva.org> 0.7.0-3mdv2010.1
++ Revision: 501882
+- rebuild for new boost
+
+* Wed Feb 03 2010 Funda Wang <fwang@mandriva.org> 0.7.0-2mdv2010.1
++ Revision: 500088
+- rebuild for new boost
+
+* Wed Jan 20 2010 Funda Wang <fwang@mandriva.org> 0.7.0-1mdv2010.1
++ Revision: 494015
+- new version 0.7.0
+
+* Thu Aug 20 2009 Emmanuel Andry <eandry@mandriva.org> 0.6.1-1mdv2010.0
++ Revision: 418585
+- disable demo (breaks build)
+- fix major
+- use system fonts
+- fix include path for demo viewer
+- New version 0.6.1
+- drop patches
+- use mandriva library policy
+
+* Thu Mar 12 2009 Emmanuel Andry <eandry@mandriva.org> 0.5.2-0.750.7mdv2009.1
++ Revision: 354290
+- rebuild for new boost
+
+* Thu Jan 29 2009 Funda Wang <fwang@mandriva.org> 0.5.2-0.750.6mdv2009.1
++ Revision: 335157
+- rebuild
+
+* Sat Jan 24 2009 Funda Wang <fwang@mandriva.org> 0.5.2-0.750.5mdv2009.1
++ Revision: 333279
+- rebuild for new python
+
+* Sun Dec 21 2008 Funda Wang <fwang@mandriva.org> 0.5.2-0.750.4mdv2009.1
++ Revision: 316865
+- rebuild for new boost
+
+* Fri Nov 07 2008 Olivier Blin <blino@mandriva.org> 0.5.2-0.750.3mdv2009.1
++ Revision: 300461
+- remove hardcoded requires in devel package
+
+* Fri Nov 07 2008 Olivier Blin <blino@mandriva.org> 0.5.2-0.750.2mdv2009.1
++ Revision: 300397
+- fix font requires
+- buildrequire python-devel
+- fix groups
+- fix build with freetype2
+- initial Mandriva package (based on Fedora)
+- create mapnik
 

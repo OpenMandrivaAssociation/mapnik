@@ -5,7 +5,7 @@
 Summary:	Free Toolkit for developing mapping applications
 Name:		mapnik
 Version:	2.1.0
-Release:	1
+Release:	2
 Group:		Communications
 License:	LGPLv2+
 URL:		http://mapnik.org/

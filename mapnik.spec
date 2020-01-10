@@ -94,7 +94,7 @@ library
 
 %prep
 %setup -q -n %{name}-v%{version}
-%apply_patches
+%autopatch -p1
 
 # clean SVN
 find . -type d -name .svn -exec rm -rf '{}' +

@@ -14,11 +14,16 @@ Source1:	mapnik-data.license
 Source2:	no_date_footer.html
 Source3:	viewer.desktop
 Source4:	.abf.yml
+Patch0:		mapnik-3.1.0-no-Lusrlib.patch
 
 BuildRequires:	chrpath
 BuildRequires:	desktop-file-utils
 BuildRequires:	doxygen
-BuildRequires:	scons
+# Sadly, mapnik needs old scons 3.x -- so we have
+# to use the in-tree version (that still requires
+# python 2 cruft)
+#BuildRequires:	scons
+BuildRequires:	python2
 BuildRequires:	pkgconfig(libagg)
 BuildRequires:	boost-devel
 BuildRequires:	gdal-devel
@@ -145,7 +150,7 @@ sed -i -e "s|common_cxx_flags = .-D\%s|common_cxx_flags = \'-D\%s %optflags -DBO
 
 # WARNING smp may break build
 # %{?_smp_mflags}
-scons         PREFIX=%{_prefix} \
+python2 scons/scons.py         PREFIX=%{_prefix} \
               THREADING=multi \
               XMLPARSER=libxml2 \
               GDAL_INCLUDES=%{_includedir}/gdal \
@@ -154,7 +159,7 @@ scons         PREFIX=%{_prefix} \
 	      SYSTEM_FONTS=True
 
 %install
-scons install DESTDIR=%{buildroot} \
+python2 scons/scons.py install DESTDIR=%{buildroot} \
               PREFIX=%{_prefix} \
               THREADING=multi \
               XMLPARSER=libxml2 \

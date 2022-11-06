@@ -1,15 +1,15 @@
 %define major	2
-%define libname %mklibname %{name} %{major}
+%define libname %mklibname %{name}
 %define devname %mklibname -d %{name}
 
 Summary:	Free Toolkit for developing mapping applications
 Name:		mapnik
-Version:	2.1.0
-Release:	2
+Version:	3.1.0
+Release:	1
 Group:		Communications
 License:	LGPLv2+
 URL:		http://mapnik.org/
-Source0:	https://github.com/downloads/mapnik/mapnik/%{name}-v%{version}.tar.bz2
+Source0:	https://github.com/mapnik/mapnik/archive/refs/tags/v%{version}.tar.gz
 Source1:	mapnik-data.license
 Source2:	no_date_footer.html
 Source3:	viewer.desktop
@@ -26,14 +26,15 @@ BuildRequires:	pkgconfig(icu-i18n)
 BuildRequires:	jpeg-devel
 BuildRequires:	libtool-devel
 BuildRequires:	postgresql-devel
-BuildRequires:	qt4-devel
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	tiff-devel
 BuildRequires:	pkgconfig(cairomm-1.0)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(proj)
-BuildRequires:	pkgconfig(pycairo)
 BuildRequires:	pkgconfig(python)
 
 Requires:	fonts-ttf-dejavu
@@ -93,8 +94,7 @@ Miscellaneous utilities distributed with the Mapnik spatial visualization
 library
 
 %prep
-%setup -q -n %{name}-v%{version}
-%autopatch -p1
+%autosetup -p1
 
 # clean SVN
 find . -type d -name .svn -exec rm -rf '{}' +
@@ -120,7 +120,6 @@ set -x
 
 # fix spurious exec flag
 chmod -x demo/viewer/images/*.png
-chmod -x demo/data/test/regenerate.sh
 find . -type d -perm /g+s -exec chmod -s '{}' \;
 
 # fix wrong path in some demo files

@@ -8,7 +8,7 @@ Version:	3.1.0
 Release:	1
 Group:		Communications
 License:	LGPLv2+
-URL:		http://mapnik.org/
+URL:		https://mapnik.org/
 Source0:	https://github.com/mapnik/mapnik/archive/refs/tags/v%{version}.tar.gz
 Source1:	mapnik-data.license
 Source2:	no_date_footer.html
